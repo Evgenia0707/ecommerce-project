@@ -12,30 +12,31 @@ public class MixPaymentCheckoutServiceImpl implements CheckoutService {
 
     @Override
     public boolean checkout(Customer customer, Double totalAmount) {
-        try{
-        GiftCardBalance giftCardBalance = findGiftCartBalance(customer.getId());
-        // 300 giftcard balance
-        // 450 customer balance
-        // 600 cart
+        try{    //if don't have data in DataBase(findGiftCartBalance) progr crush -> use try&catch show info for user(som-q wrong)
+            GiftCardBalance giftCardBalance = findGiftCartBalance(customer.getId());
 
-        // 300 - 600 = -300
-        // 300 + 450 - 600 = 150
-        final double giftBalance = giftCardBalance.getBalance() - totalAmount;
-        if (giftBalance > 0) {
-            giftCardBalance.setBalance(giftBalance);
-            return true;
-                } else {
-            CustomerBalance customerBalance = findCustomerBalance(customer.getId());
-            final double mixBalance = giftCardBalance.getBalance() + customerBalance.getBalance() - totalAmount;
+            // 300 giftcard balance
+            // 450 customer balance
+            // 600 cart
 
-            if (mixBalance > 0) {
-                giftCardBalance.setBalance(0d);
-                customerBalance.setBalance(mixBalance);
-                return true;// payment done ->mix balance
+            // 300 - 600 = -300
+            // 300 + 450 - 600 = 150
+            final double giftBalance = giftCardBalance.getBalance() - totalAmount;
+            if (giftBalance > 0) {
+                giftCardBalance.setBalance(giftBalance);
+                return true;
+            } else {
+                CustomerBalance customerBalance = findCustomerBalance(customer.getId());
+                final double mixBalance = giftCardBalance.getBalance() + customerBalance.getBalance() - totalAmount;
+
+                if (mixBalance > 0) {
+                    giftCardBalance.setBalance(0d);
+                    customerBalance.setBalance(mixBalance);
+                    return true;// payment done ->mix balance
+                }
+
             }
-
-        }
-    }catch (Exception e) {
+        }catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return false;
@@ -64,3 +65,4 @@ public class MixPaymentCheckoutServiceImpl implements CheckoutService {
         return giftCartBalance;
     }
 }
+

@@ -4,6 +4,7 @@ import com.company.Cart;
 
 public interface OrderService {
 
-  String placeOrder(Cart cart);
+  String placeOrder(Cart cart);// 2 types payments ()
 
+//  String refund (Cart cart);
 }
